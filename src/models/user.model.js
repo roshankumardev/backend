@@ -50,10 +50,13 @@ const userSchema = new Schema(
 )
 
 userSchema.pre("save", async function (next) {
-  if (!this.isModifide("password")) return next();
+  console.log("pre save hook running")
+  console.log("isModified:", this.isModified("password"))
+  
+  if (!this.isModified("password")) return next();
 
-  this.password = bcrypt.hash(this.password, 10)
-  next()
+  this.password = await bcrypt.hash(this.password, 10)
+  console.log("password hashed")
 })
 
 userSchema.methods.isPasswordCorrect = async function (password) {
